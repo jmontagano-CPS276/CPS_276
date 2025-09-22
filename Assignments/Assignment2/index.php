@@ -29,7 +29,7 @@ function createTable($rows, $columns) {
     for ($i = 1; $i <= $rows; $i++) {
         $table .= '<tr>';
         for ($j = 1; $j <= $columns; $j++) {
-            $table .= "<td>Row {$i}, Column {$j}</td>";
+            $table .= "<td>Row {$i}, Col {$j}</td>";
         }
         $table .= '</tr>';
     }
