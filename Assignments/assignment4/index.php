@@ -30,7 +30,8 @@ $result .= $Calculator->calc(10);
 </head>
 <body class="container">
     <h1>Calculator Output</h1>
+    <main>
     <?php echo $result ?>
-    
+    </main>
 </body>
 </html>
