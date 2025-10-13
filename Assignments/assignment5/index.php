@@ -3,7 +3,7 @@ $output = "";
 if($_SERVER["REQUEST_METHOD"] == "POST") {
     require_once __DIR__ . '/classes/Directories.php';
     if (isset($_POST['submit'])) {
-        $dir = new Directories($_POST['directoryname'], $_POST['filecontent']);
+        $dir = new Directories(trim($_POST['directoryname']), trim($_POST['filecontent']));
         $output = $dir->newDir();
     }
 
@@ -25,10 +25,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
   <body>
     <div class="container">
       <h1>File and Directory Assignment</h1>
-      <?php echo $output?>
       <p>Enter a folder name and the contents of a file.  Folder names should contain alpha numeric characters only.</p>
-
-      
+      <?php echo $output?>   
           
       <form method="post" action="index.php">
         <div class="form-group">
