@@ -14,13 +14,13 @@ class Directories
         $this->directoryName = self::$directoryPath . $directoryName;
         $this->fileContents = $fileContents;
     }
-    public function newDir()
+    public function newDirAndFile()
     {
         try {
 
             // directory existence check
             if (is_dir($this->directoryName)) {
-                throw new Exception("This directory already exists.");
+                throw new Exception("A directory already exists with that name.");
             }
 
             // if directory creation failed for some reason throw exception
@@ -34,11 +34,11 @@ class Directories
             $this->filePath = $this->directoryName . "/" . self::$readMeFile;
 
             // if file could not be made for some reason, throw new exception.
-            if (!touch($this->filePath)) {
-                throw new Exception("This file cannot be created.");
+            if (trim($this->fileContents) === "" || !touch($this->filePath)) {
+                throw new Exception("This file could not be created.");
             }
 
-            // if file stream/file could not open, thro new exception
+            // if file stream/file could not open, throw new exception
             if (!$handle = fopen($this->filePath, "w")) {
                 throw new Exception("Cannot open " . $this->filePath);
             }
@@ -46,12 +46,12 @@ class Directories
             // would handle these but assignment specifications don't seem to be worried about it.
             fwrite($handle, $this->fileContents);
             fclose($handle);
-            
+
         } catch (Exception $e) {
             error_log("Error: " . $e->getMessage());
-            return htmlspecialchars($e->getMessage());
+            return "<p>" . htmlspecialchars($e->getMessage()) . "</p>";
         }
-        return "<p>File and Directory were created.</p>\n<a href='{$this->filePath}' target='_blank'><p>Path where file is located.</a></p>";
+        return "<p>File and Directory were created.</p><p><a href='{$this->filePath}' target='_blank'>Path where file is located</a></p>";
     }
 
 

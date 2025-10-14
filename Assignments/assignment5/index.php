@@ -4,7 +4,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
     require_once __DIR__ . '/classes/Directories.php';
     if (isset($_POST['submit'])) {
         $dir = new Directories(trim($_POST['directoryname']), trim($_POST['filecontent']));
-        $output = $dir->newDir();
+        $output = $dir->newDirAndFile();
     }
 
 }
@@ -35,7 +35,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         </div>
         <div class="form-group">
           <label for="filecontent">File Content</label>
-          <textarea name="filecontent" id="filecontent" name="filecontent" class="form-control" cols="20" rows="6"></textarea>
+          <textarea name="filecontent" id="filecontent" class="form-control" cols="20" rows="6"></textarea>
           
         </div>
         <button type="submit" class="btn btn-primary" name="submit">Submit</button>
