@@ -1,4 +1,4 @@
-<?php require '../php/listFilesProc.php'; ?>
+<?php require_once 'php/listFilesProc.php'; ?>
 <!doctype html>
 <html lang="en">
   <head>
