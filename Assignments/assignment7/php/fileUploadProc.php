@@ -2,7 +2,8 @@
 require_once __DIR__ . '/../classes/Db_conn.php';
 require_once __DIR__ . '/../classes/Pdo_methods.php';
 
-const PATH = '/home/j/m/jmontagano/public_html/cps276/Assignments/assignment7/files/';
+const SERVERPATH = '/home/j/m/jmontagano/public_html/cps276/Assignments/assignment7/files/';
+const URLPATH = 'https://russet-v8.wccnet.edu/~jmontagano/cps276/Assignments/assignment7/files/';
 $output = "";
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -14,7 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $output = "No File Selected, you must select a file to upload.";
         return;
     }
-    if (trim(empty($_POST['fileName']))) {
+    if (trim($_POST['fileName']) === '') {
         $output = "You must have a name for the file";
         return;
     }
@@ -25,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $fileNameActual = $_FILES['file']['name'];
     $fileSize = $_FILES['file']['size'];
     $fileType = $_FILES['file']['type'];
-    $filePath = PATH . $fileNameActual;
+    $filePath = SERVERPATH . $fileNameActual;
 
     if ($fileType !== 'application/pdf') {
         $output = "Error, incorrect file type.";
@@ -39,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     move_uploaded_file($_FILES['file']['tmp_name'], $filePath);
 
-    $filePath = 'https://russet-v8.wccnet.edu/~jmontagano/cps276/Assignments/assignment7/files/' . $fileNameActual;
+    $filePath = URLPATH . $fileNameActual;
 
     $dataInsert = new Pdo_methods();
     $sql = "INSERT INTO UploadedFiles (filename, filepath) VALUES (:filename, :filepath)";
