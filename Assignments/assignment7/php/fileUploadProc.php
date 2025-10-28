@@ -3,10 +3,9 @@ require_once __DIR__ . '/../classes/Db_conn.php';
 require_once __DIR__ . '/../classes/Pdo_methods.php';
 
 const PATH = '/home/j/m/jmontagano/public_html/cps276/Assignments/assignment7/files/';
+$output = "";
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
-    $output = "";
 
     if (!isset($_POST['fileUpload'])) {
         return;
