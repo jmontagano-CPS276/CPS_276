@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/../classes/Pdo_methods.php';
+require_once 'classes/Pdo_methods.php';
     $output = '';
     $selectStatement = new Pdo_methods();
     $sql = 'SELECT * FROM UploadedFiles';

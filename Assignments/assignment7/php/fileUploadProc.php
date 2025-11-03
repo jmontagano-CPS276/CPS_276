@@ -1,6 +1,6 @@
 <?php
-require_once __DIR__ . '/../classes/Db_conn.php';
-require_once __DIR__ . '/../classes/Pdo_methods.php';
+require_once  'classes/Db_conn.php';
+require_once 'classes/Pdo_methods.php';
 
 const SERVERPATH = '/home/j/m/jmontagano/public_html/cps276/Assignments/assignment7/files/';
 const URLPATH = 'https://russet-v8.wccnet.edu/~jmontagano/cps276/Assignments/assignment7/files/';
