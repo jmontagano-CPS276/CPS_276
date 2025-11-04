@@ -127,8 +127,8 @@ class Pdo_methods extends Db_conn {
 	private function createBinding($bindings){
 		foreach($bindings as $value){
 			switch($value[2]){
-				case "str" : $this->sth->bindParam($value[0],$value[1], PDO::PARAM_STR);break;
-				case "int" : $this->sth->bindParam($value[0],$value[1], PDO::PARAM_INT);break;
+				case "str" : $this->sth->bindParam($value[0],$value[1], PDO::PARAM_STR);
+				case "int" : $this->sth->bindParam($value[0],$value[1], PDO::PARAM_INT);
 			}
 		}
 	}

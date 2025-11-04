@@ -1,7 +1,6 @@
 <?php
 require_once 'classes/Db_conn.php';
 require_once 'classes/Pdo_methods.php';
-// require_once 'classes/Db_conn.php';
 
 class Date_time
 {
@@ -17,16 +16,18 @@ class Date_time
         $this->note = '';
     }
 
-
     function checkSubmit(): string
     {
+        // If the getNotes button is hit on the display_notes.php page, do this.
         if (isset($_POST['getNotes'])) {
             if (empty($_POST['begDate']) || (empty($_POST['endDate']))) {
                 return 'You must select a date range.';
             }
-            $begDate = strtotime($_POST['begDate']);
-            $endDate = strtotime($_POST['endDate']);
+
+            $begDate = strtotime($_POST['begDate']); // some day at 00:00:00
+            $endDate = strtotime($_POST['endDate']) + 86399; // some day at 00:00:00 + 23:59:59
             $output = '<table class="table table-striped table-bordered"><thead><tr><th>Date and Time</th><th>Note</th></tr></thead><tbody>';
+
             $selectStatement = new Pdo_methods();
             $sql = "SELECT note_timestamp, note FROM notes WHERE note_timestamp BETWEEN $begDate AND $endDate ORDER BY note_timestamp DESC";
 
@@ -43,10 +44,10 @@ class Date_time
                 return $output;
             }
             }
+            // If the add note button is hit on the index.php page, do this.
             if (isset($_POST['addNote'])) {
                 if (empty($_POST['dateTime']) || empty(trim($_POST['note']))) {
-                    $output = "You need to enter a date, time and note.";
-                    return $output;
+                    return "You need to enter a date, time and note.";
                 }
                 $this->note_timestamp = strtotime($_POST['dateTime']);
                 $this->note = $_POST['note'];
