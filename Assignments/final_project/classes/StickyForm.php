@@ -1,28 +1,29 @@
 <?php
+// Include the Validation class which provides the base validation functionality
+require_once 'classes/Validation.php';
+
 /**
  * StickyForm Class
- * Extends the Validation class to provide form validation and rendering capabilities
- * This class handles form validation, maintains form values after submission, and renders form elements
+ * 
+ * This class extends the Validation class to provide form persistence and rendering capabilities.
+ * It maintains form values after submission and handles validation of different form field types.
+ * The class also provides methods to render various form elements with Bootstrap styling.
  */
-
-require_once 'Validation.php';
-
 class StickyForm extends Validation {
+
     /**
-     * Validates form inputs and retains their values after submission
-     * param array $data - The submitted form data
-     * param array $formConfig - Configuration array containing form element definitions
-     * return array - Updated form configuration with validation results and retained values
+     * Validates form data against the provided configuration
+     * 
+     * @param array $data The submitted form data ($_POST)
+     * @param array $formConfig The form configuration array defining field types and validation rules
+     * @return array Updated form configuration with sticky values and error messages
      */
     public function validateForm($data, $formConfig) {
         foreach ($formConfig as $key => &$element) {
-            // Store the submitted value for each form element
-
-            //print_r($data[$key]);
-
+            // Store submitted value to maintain form state
             $element['value'] = $data[$key] ?? '';
 
-            // Get custom error message if defined
+            // Get custom error message if specified, otherwise use default
             $customErrorMsg = $element['errorMsg'] ?? null;
 
             // Handle text and textarea inputs
@@ -41,18 +42,17 @@ class StickyForm extends Validation {
                     }
                 }
             }
-            
-            // Handle select dropdowns
+
+            // Handle select dropdown validation
             elseif (isset($element['type']) && $element['type'] === 'select') {
                 $element['selected'] = $data[$key] ?? '';
-                // Validate required select fields
                 if (isset($element['required']) && $element['required'] && ($element['selected'] === '0' || empty($element['selected']))) {
                     $element['error'] = $customErrorMsg ?? 'This field is required.';
                     $formConfig['masterStatus']['error'] = true;
                 }
             }
-            
-            // Handle checkbox inputs (both single and groups)
+
+            // Handle checkbox validation (both single and groups)
             elseif (isset($element['type']) && $element['type'] === 'checkbox') {
                 if (isset($element['options'])) {
                     // Handle checkbox groups
@@ -63,7 +63,6 @@ class StickyForm extends Validation {
                             $anyChecked = true;
                         }
                     }
-                    // Validate required checkbox groups
                     if (isset($element['required']) && $element['required'] && !$anyChecked) {
                         $element['error'] = $customErrorMsg ?? 'This field is required.';
                         $formConfig['masterStatus']['error'] = true;
@@ -77,7 +76,8 @@ class StickyForm extends Validation {
                     }
                 }
             }
-            // Handle radio button groups
+
+            // Handle radio button validation
             elseif (isset($element['type']) && $element['type'] === 'radio') {
                 $isChecked = false;
                 foreach ($element['options'] as &$option) {
@@ -86,21 +86,22 @@ class StickyForm extends Validation {
                         $isChecked = true;
                     }
                 }
-                // Validate required radio groups
                 if (isset($element['required']) && $element['required'] && !$isChecked) {
                     $element['error'] = $customErrorMsg ?? 'This field is required.';
                     $formConfig['masterStatus']['error'] = true;
                 }
             }
         }
+
         return $formConfig;
     }
 
     /**
-     * Generates HTML for select options
-     * param array $options - Array of options with values as keys and labels as values
-     * param string $selectedValue - Currently selected value
-     * return string - HTML for select options
+     * Generates HTML for select dropdown options
+     * 
+     * @param array $options Array of options with value => label pairs
+     * @param string $selectedValue Currently selected value
+     * @return string HTML string of option elements
      */
     public function createOptions($options, $selectedValue) {
         $html = '';
@@ -112,19 +113,21 @@ class StickyForm extends Validation {
     }
 
     /**
-     * Renders error message for a form element
-     * param array $element - Form element configuration
-     * return string - HTML for error message
+     * Renders error message if present
+     * 
+     * @param array $element Form element configuration
+     * @return string HTML string of error message or empty string
      */
     private function renderError($element) {
         return !empty($element['error']) ? "<span class=\"text-danger\">{$element['error']}</span><br>" : '';
     }
 
     /**
-     * Renders a text input field
-     * param array $element - Form element configuration
-     * param string $class - Additional CSS classes
-     * return string - HTML for text input
+     * Renders a text input field with label and error message
+     * 
+     * @param array $element Form element configuration
+     * @param string $class Additional CSS classes
+     * @return string HTML string of the input field
      */
     public function renderInput($element, $class = '') {
         $errorOutput = $this->renderError($element);
@@ -138,10 +141,29 @@ HTML;
     }
 
     /**
-     * Renders a textarea field
-     * param array $element - Form element configuration
-     * param string $class - Additional CSS classes
-     * return string - HTML for textarea
+     * Renders a password input field with label and error message
+     * 
+     * @param array $element Form element configuration
+     * @param string $class Additional CSS classes
+     * @return string HTML string of the password field
+     */
+    public function renderPassword($element, $class = '') {
+        $errorOutput = $this->renderError($element);
+        return <<<HTML
+<div class="$class">
+    <label for="{$element['id']}">{$element['label']}</label>
+    <input type="password" class="form-control" id="{$element['id']}" name="{$element['name']}" value="{$element['value']}">
+    $errorOutput
+</div>
+HTML;
+    }
+
+    /**
+     * Renders a textarea field with label and error message
+     * 
+     * @param array $element Form element configuration
+     * @param string $class Additional CSS classes
+     * @return string HTML string of the textarea
      */
     public function renderTextarea($element, $class = '') {
         $errorOutput = $this->renderError($element);
@@ -155,11 +177,12 @@ HTML;
     }
 
     /**
-     * Renders a group of radio buttons
-     * param array $element - Form element configuration
-     * param string $class - Additional CSS classes
-     * param string $layout - Layout style ('vertical' or 'horizontal')
-     * return string - HTML for radio button group
+     * Renders a group of radio buttons with label and error message
+     * 
+     * @param array $element Form element configuration
+     * @param string $class Additional CSS classes
+     * @param string $layout 'horizontal' or 'vertical' arrangement
+     * @return string HTML string of the radio button group
      */
     public function renderRadio($element, $class = '', $layout = 'vertical') {
         $errorOutput = $this->renderError($element);
@@ -184,11 +207,12 @@ HTML;
     }
 
     /**
-     * Renders a single checkbox
-     * param array $element - Form element configuration
-     * param string $class - Additional CSS classes
-     * param string $layout - Layout style ('vertical' or 'horizontal')
-     * return string - HTML for checkbox
+     * Renders a single checkbox with label and error message
+     * 
+     * @param array $element Form element configuration
+     * @param string $class Additional CSS classes
+     * @param string $layout 'horizontal' or 'vertical' arrangement
+     * @return string HTML string of the checkbox
      */
     public function renderCheckbox($element, $class = '', $layout = 'vertical') {
         $checked = $element['checked'] ? 'checked' : '';
@@ -206,11 +230,12 @@ HTML;
     }
 
     /**
-     * Renders a group of checkboxes
-     * param array $element - Form element configuration
-     * param string $class - Additional CSS classes
-     * param string $layout - Layout style ('vertical' or 'horizontal')
-     * return string - HTML for checkbox group
+     * Renders a group of checkboxes with label and error message
+     * 
+     * @param array $element Form element configuration
+     * @param string $class Additional CSS classes
+     * @param string $layout 'horizontal' or 'vertical' arrangement
+     * @return string HTML string of the checkbox group
      */
     public function renderCheckboxGroup($element, $class = '', $layout = 'vertical') {
         $errorOutput = $this->renderError($element);
@@ -235,10 +260,11 @@ HTML;
     }
 
     /**
-     * Renders a select dropdown
-     * param array $element - Form element configuration
-     * param string $class - Additional CSS classes
-     * return string - HTML for select dropdown
+     * Renders a select dropdown with label and error message
+     * 
+     * @param array $element Form element configuration
+     * @param string $class Additional CSS classes
+     * @return string HTML string of the select dropdown
      */
     public function renderSelect($element, $class = '') {
         $errorOutput = $this->renderError($element);

@@ -9,7 +9,7 @@ function init()
         $output = "<p>There are no records to display</p>";
     } else {
         $output = <<<HTML
-
+        
         <form method='post' action='index.php?page=deleteAdmins'>
             <input type='submit' class='btn btn-danger' name='delete' value='Delete'/><br><br><table class='table table-striped table-bordered'>
             <thead>
@@ -26,12 +26,13 @@ function init()
 HTML;
 
         foreach ($records as $row) {
-            $output .= "<tr><td>{$row['fname']}</td>
-            <td>{$row['lname']}</td>
-            <td>{$row['email']}</td>
-            <td>{$row['password']}</td>
-            <td>{$row['status']}</td>
-            <td><input type='checkbox' name='chkbx[]' value='{$row['id']}' /></td></tr>";
+            $output .= "<tr>
+            <td>" . htmlspecialchars($row['fname']) . "</td>
+            <td>" . htmlspecialchars($row['lname']) . "</td>
+            <td>" . htmlspecialchars($row['email']) . "</td>
+            <td>" . htmlspecialchars($row['password']) . "</td>
+            <td>" . htmlspecialchars($row['status']) . "</td>
+            <td><input type='checkbox' name='chkbx[]' value='" . htmlspecialchars($row['id']) . "' /></td></tr>";
         }
 
         $output .= "</tbody></table></form>";
@@ -42,12 +43,12 @@ HTML;
             if (!$deleted) {
                 $msg = "<p>&nbsp;</p>";
             } else {
-                $msg = "<p style='color: green'>Contact(s) deleted</p>";
+                $msg = "<p style='color: green'>User(s) deleted</p>";
             }
 
         }
 
     }
 
-    return $msg . $output;
+    return '<h1>Delete Admin</h1>' . $msg . $output;
 }

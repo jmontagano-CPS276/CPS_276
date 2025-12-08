@@ -9,57 +9,58 @@ $formConfig = [
     'first_name' => [
         'type' => 'text',
         'regex' => 'name',
-        'label' => '*First Name',
+        'label' => 'First Name',
         'name' => 'first_name',
         'id' => 'first_name',
         'errorMsg' => 'You must enter a valid first name',
         'error' => '',
         'required' => true,
-        'value' => ''
+        'value' => 'Joseph'
     ],
 
     'last_name' => [
         'type' => 'text',
         'regex' => 'name',
-        'label' => '*Last Name',
+        'label' => 'Last Name',
         'name' => 'last_name',
         'id' => 'last_name',
         'errorMsg' => 'You must enter a valid last name.',
         'error' => '',
         'required' => true,
-        'value' => ''
+        'value' => 'Montagano'
     ],
 
     'address' => [
         'type' => 'text',
         'regex' => 'address',
-        'label' => '*Address',
+        'label' => 'Address',
         'name' => 'address',
         'id' => 'address',
         'errorMsg' => 'You must enter a valid address.',
         'error' => '',
         'required' => true,
-        'value' => ''
+        'value' => '20160 South Street'
     ],
 
     'city' => [
         'type' => 'text',
         'regex' => 'city',
-        'label' => '*City',
+        'label' => 'City',
         'name' => 'city',
         'id' => 'city',
         'errorMsg' => 'You must enter a valid city.',
         'error' => '',
         'required' => true,
-        'value' => ''
+        'value' => 'Garden City'
     ],
 
     'state' => [
         'type' => 'select',
-        'label' => '*State',
+        'label' => 'State',
         'name' => 'state',
         'id' => 'state',
         'options' => [
+            '' => 'Please Select a State',
             'MI' => 'Michigan',
             'OH' => 'Ohio',
             'IL' => 'Illinois',
@@ -75,25 +76,25 @@ $formConfig = [
     'phone' => [
         'type' => 'text',
         'regex' => 'phone',
-        'label' => '*Phone',
+        'label' => 'Phone',
         'name' => 'phone',
         'id' => 'phone',
         'errorMsg' => 'You must enter a valid phone number.',
         'error' => '',
         'required' => true,
-        'value' => ''
+        'value' => '734.299.4195'
     ],
 
     'email' => [
         'type' => 'text',
         'regex' => 'email',
-        'label' => '*Email',
+        'label' => 'Email',
         'name' => 'email',
         'id' => 'email',
         'errorMsg' => 'You must enter a valid email address.',
         'error' => '',
         'required' => true,
-        'value' => ''
+        'value' => 'test@gmail.com'
     ],
 
     'age' => [
@@ -108,20 +109,20 @@ $formConfig = [
             ['value' => '50+', 'label' => '50+', 'checked' => false]
         ],
         'required' => true,
-        'errorMsg' => 'Please choose an age range.',
+        'errorMsg' => 'You must select an age range.',
         'error' => ''
     ],
 
     'dob' => [
         'type' => 'text',
         'regex' => 'dob',
-        'label' => '*Date of birth',
+        'label' => 'Date of birth',
         'name' => 'dob',
         'id' => 'dob',
         'errorMsg' => 'You must enter a valid date of birth.',
         'error' => '',
         'required' => true,
-        'value' => ''
+        'value' => '05/28/1997'
     ],
 
     'contact' => [
@@ -134,8 +135,8 @@ $formConfig = [
             ['value' => 'email', 'label' => 'email', 'checked' => false],
             ['value' => 'text', 'label' => 'text', 'checked' => false]
         ],
-        'required' => true,
-        'errorMsg' => 'Please select at least one contact method.',
+        'required' => false,
+        'errorMsg' => '',
         'error' => ''
     ],
 
@@ -159,23 +160,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $pdo = new Pdo_methods();
 
-        $dob = $_POST['dob']; // e.g., "03/12/2024"
-        $dobf = DateTime::createFromFormat('m/d/Y', $dob)->format('Y-m-d');
-        $contacts = implode(', ', $_POST['contact']);
-
+        if (isset($_POST['contact'])) {
+            $contacts = implode(', ', $_POST['contact']);
+        }
 
         $sql = "INSERT INTO contacts (fname, lname, address, city, state, phone, email, dob, contacts, age)
         VALUES (:fname, :lname, :address, :city, :state, :phone, :email, :dob, :contacts, :age)";
-
+        
         $bindings = [
             [':fname', $_POST['first_name'], 'str'],
             [':lname', $_POST['last_name'], 'str'],
             [':address', $_POST['address'], 'str'],
-            [':city', $_POST['city'], 'str'],     
+            [':city', $_POST['city'], 'str'],
             [':state', $_POST['state'], 'str'],
             [':phone', $_POST['phone'], 'str'],
             [':email', $_POST['email'], 'str'],
-            [':dob', $dobf, 'str'],
+            [':dob', $_POST['dob'], 'str'],
             [':contacts', $contacts, 'str'],
             [':age', $_POST['age'], 'str']
         ];
@@ -183,10 +183,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $result = $pdo->otherBinded($sql, $bindings);
 
         if ($result === 'error') {
-            $acknowledgment = '<p style="color: red">There was an error adding the name</p>';
+            $acknowledgment = '<p style="color: red">There was an error adding the record.</p>';
         } else {
-            $acknowledgment = '<p style="color: green">Name has been added</p>';
+            $acknowledgment = '<p style="color: green">Contact Information Added.</p>';
         }
-    
+
+        foreach ($formConfig as $key => &$field) {
+            if (isset($field['value'])) {
+                $field['value'] = '';
+            }
+            if (isset($field['selected'])) {
+                $field['selected'] = '';
+            }
+
+            if (isset($field['options'])) {
+                foreach ($field['options'] as $optKey => &$opt) {
+                    if (isset($opt['checked'])) {
+                        $opt['checked'] = false;
+                    }
+                }
+
+            }
+        }
     }
 }

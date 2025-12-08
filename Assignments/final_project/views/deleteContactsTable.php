@@ -32,17 +32,19 @@ function init()
 HTML;
 
         foreach ($records as $row) {
-            $output .= "<tr><td>{$row['fname']}</td>
-            <td>{$row['lname']}</td>
-            <td>{$row['address']}</td>
-            <td>{$row['city']}</td>
-            <td>{$row['state']}</td>
-            <td>{$row['phone']}</td>
-            <td>{$row['email']}</td>
-            <td>{$row['dob']}</td>
-            <td>{$row['contacts']}</td>
-            <td>{$row['age']}</td>
-            <td><input type='checkbox' name='chkbx[]' value='{$row['id']}' /></td></tr>";
+            $output .= "<tr>
+            <td>" . htmlspecialchars($row['fname']) . "</td>
+            <td>" . htmlspecialchars($row['lname']) . "</td>
+            <td>" . htmlspecialchars($row['address']) . "</td>
+            <td>" . htmlspecialchars($row['city']) . "</td>
+            <td>" . htmlspecialchars($row['state']) . "</td>
+            <td>" . htmlspecialchars($row['phone']) . "</td>
+            <td>" . htmlspecialchars($row['email']) . "</td>
+            <td>" . htmlspecialchars($row['dob']) . "</td>
+            <td>" . htmlspecialchars($row['contacts']) . "</td>
+            <td>" . htmlspecialchars($row['age']) . "</td>
+            <td><input type='checkbox' name='chkbx[]' value='" . htmlspecialchars($row['id']) . "' /></td></tr>";
+
         }
 
         $output .= "</tbody></table></form>";
@@ -60,5 +62,5 @@ HTML;
 
     }
 
-    return $msg . $output;
+    return '<h1>Delete Contact</h1>' . $msg . $output;
 }

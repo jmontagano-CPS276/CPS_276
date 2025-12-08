@@ -3,28 +3,27 @@ require_once 'classes/StickyForm.php';
 require_once 'classes/Pdo_methods.php';
 require_once 'includes/security.php';
 
-// session_start();
 $acknowledgment = "<p></p>";//I use $acknowledgment as a placeholder because sometimes it has data and sometimes it does not and if it does not I don't want the space to collapse. 
 $failed = false;
 $formConfig = [
     'email' => [
         'type' => 'text',
-        // 'regex' => 'email',
-        'label' => 'Username',
+        'label' => 'Email',
+        'regex' => 'email',
         'name' => 'email',
         'id' => 'email',
-        // 'errorMsg' => 'You must enter a valid email address.',
         'error' => '',
         'required' => true,
+        'errorMsg' => 'You must enter a valid email',
         'value' => ''
     ],
     'password' => [
-        'type' => 'text',
-        // 'regex' => 'password',
+        'type' => 'password',
         'label' => 'Password',
+        'regex' => 'password',
         'name' => 'password',
         'id' => 'password',
-        'errorMsg' => '',
+        'errorMsg' => 'You must enter a password',
         'error' => '',
         'required' => true,
         'value' => ''
@@ -40,8 +39,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $formConfig = $stickyForm->validateForm($_POST, $formConfig);
 
-    if (!$stickyForm->hasErrors() && $formConfig['masterStatus']['error'] == false) {
 
+    if (!$stickyForm->hasErrors() && $formConfig['masterStatus']['error'] == false) {
+        
         $pdo = new Pdo_methods();
 
         $sql = "SELECT id, fname, lname, email, password, status 

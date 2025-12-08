@@ -9,7 +9,7 @@ $formConfig = [
     'first_name' => [
         'type' => 'text',
         'regex' => 'name',
-        'label' => '*First Name',
+        'label' => 'First Name',
         'name' => 'first_name',
         'id' => 'first_name',
         'errorMsg' => 'You must enter a valid first name',
@@ -20,7 +20,7 @@ $formConfig = [
     'last_name' => [
         'type' => 'text',
         'regex' => 'name',
-        'label' => '*Last Name',
+        'label' => 'Last Name',
         'name' => 'last_name',
         'id' => 'last_name',
         'errorMsg' => 'You must enter a valid last name.',
@@ -31,7 +31,7 @@ $formConfig = [
     'email' => [
         'type' => 'text',
         'regex' => 'email',
-        'label' => '*Email',
+        'label' => 'Email',
         'name' => 'email',
         'id' => 'email',
         'errorMsg' => 'You must enter a valid email address.',
@@ -42,7 +42,7 @@ $formConfig = [
     'password' => [
         'type' => 'text',
         'regex' => 'password',
-        'label' => '*Password',
+        'label' => 'Password',
         'name' => 'password',
         'id' => 'password',
         'errorMsg' => 'You must enter a valid password.',
@@ -52,10 +52,11 @@ $formConfig = [
     ],
     'status' => [
         'type' => 'select',
-        'label' => '*Status',
+        'label' => 'Status',
         'name' => 'status',
         'id' => 'status',
         'options' => [
+            '' => 'Please Select a Status',
             'staff' => 'Staff',
             'admin' => 'Admin'
         ],
@@ -81,22 +82,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!$stickyForm->hasErrors() && $formConfig['masterStatus']['error'] == false) {
 
         $pdo = new Pdo_methods();
-        $password = $_POST['password'];
-        $password = password_hash($password, PASSWORD_DEFAULT);
-        $sql = "INSERT INTO admins (fname, lname, email, password, status) VALUES (:fname, :lname, :email, :password, :status)";
-        $bindings = [
-            [':fname', $_POST['first_name'], 'str'],
-            [':lname', $_POST['last_name'], 'str'],
-            [':email', $_POST['email'], 'str'],
-            [':password', $password, 'str'],
-            [':status', $_POST['status'], 'str']
-         ];
-        $result = $pdo->otherBinded($sql, $bindings);
-
-        if ($result === 'error') {
-            $acknowledgment = '<p style="color: red">There was an error adding the name</p>';
+        $sql = 'SELECT email FROM admins WHERE email = :email';
+        $bindings =
+            [[':email', $_POST['email'], 'str']];
+        $result = $pdo->selectBinded($sql, $bindings);
+        if (count($result) > 0) {
+            $acknowledgment = 'An account with that email already exists.';
         } else {
-            $acknowledgment = '<p style="color: green">Name has been added</p>';
+            $password = $_POST['password'];
+            $password = password_hash($password, PASSWORD_DEFAULT);
+            $sql = "INSERT INTO admins (fname, lname, email, password, status) VALUES (:fname, :lname, :email, :password, :status)";
+            $bindings = [
+                [':fname', $_POST['first_name'], 'str'],
+                [':lname', $_POST['last_name'], 'str'],
+                [':email', $_POST['email'], 'str'],
+                [':password', $password, 'str'],
+                [':status', $_POST['status'], 'str']
+            ];
+            $result = $pdo->otherBinded($sql, $bindings);
+
+
+            if ($result === 'error') {
+                $acknowledgment = '<p style="color: red">There was an error adding the name</p>';
+            } else {
+                $acknowledgment = '<p style="color: green">User has been added</p>';
+            }
+            foreach ($formConfig as $key => &$field) {
+                if (isset($field['value'])) {
+                    $field['value'] = '';
+                }
+
+                if (isset($field['selected'])) {
+                    $field['selected'] = '';
+                }
+
+            }
         }
     }
 }

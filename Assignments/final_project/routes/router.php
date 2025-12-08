@@ -1,24 +1,27 @@
 <?php
-require 'includes/security.php';      // sets $loggedIn, $admin from $_SESSION
-// require 'controllers/loginProc.php';  
+require 'includes/security.php';
 
-$defaultPage = 'loginForm';
 $content = '';
 
-$page = $_GET['page'] ?? $defaultPage;
+if (!isset($_GET['page'])) {
+    header("Location: index.php?page=login");
+    exit;
+}
+// GETS THE GET REQUEST VALUE FOR WHATEVER'S IN PAGE
+$page = $_GET['page'];
 
 if (!$loggedIn) {
 
-    if ($page !== 'loginForm') {
-        header("Location: index.php?page=$defaultPage");
+    if ($page !== 'login') {
+        header("Location: index.php?page=login");
         exit;
     }
 
     require_once 'views/loginForm.php';
     $content = init();
-    return;
+    return; 
 }
-
+// IF ADMIN THESE LINKS ARE ALLOWABLE
 if ($admin) {
 
     switch ($page) {
@@ -41,16 +44,19 @@ if ($admin) {
         case 'logout':
             require_once 'views/logout.php';
             break;
+
         case 'welcome':
             require_once 'views/welcome.php';
             break;
 
-        case 'loginForm':
-            header("Location: index.php?page=$defaultPage");
+        case 'login':
+            require_once 'views/logout.php';
+            init(); 
+            header("Location: index.php?page=login");
             exit;
 
         default:
-            header("Location: index.php?page=$defaultPage");
+            header("Location: index.php?page=login");
             exit;
     }
 
@@ -58,13 +64,14 @@ if ($admin) {
     return;
 }
 
+
 switch ($page) {
 
     case 'addAdmin':
     case 'deleteAdmins':
-            require_once 'views/logout.php';
-            init();
-            exit;
+        require_once 'views/logout.php';
+        init();
+        exit;
 
     case 'addContact':
         require_once 'views/addContactForm.php';
@@ -82,14 +89,16 @@ switch ($page) {
         require_once 'views/welcome.php';
         break;
 
-    case 'loginForm':
-        header("Location: index.php?page=$defaultPage");
+    case 'login':
+        require_once 'views/logout.php';
+        init();
+        header("Location: index.php?page=login");
         exit;
 
     default:
-        header("Location: index.php?page=$defaultPage");
+        header("Location: index.php?page=login");
         exit;
 }
 
 $content = init();
-
+return;

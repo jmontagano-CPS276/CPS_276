@@ -1,5 +1,4 @@
 <?php
-require 'includes/navigation.php';
 function init() {
     return <<<HTML
 
@@ -15,8 +14,5 @@ function init() {
 
 <body class="container">
     <h1>Welcome {$_SESSION['fname']}</h1>
-</body>
-
-</html>
 HTML;
 }

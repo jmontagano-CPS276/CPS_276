@@ -19,7 +19,7 @@ function init() {
             </div>
             <div class="row">
             <div class="col-md-6">
-                {$stickyForm->renderInput($formConfig['password'], 'mb-3')}
+                {$stickyForm->renderPassword($formConfig['password'], 'mb-3')}
             </div>
 </div>
 

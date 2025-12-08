@@ -9,7 +9,7 @@ setcookie("PHPSESSID", "", time() - 3600, "/");
 session_destroy();
 
 /* REDIRECT TO INDEX */
-header('Location: index.php?page=loginForm');
+header('Location: index.php?page=login');
 exit;
 }
     

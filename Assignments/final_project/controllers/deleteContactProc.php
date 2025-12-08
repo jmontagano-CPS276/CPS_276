@@ -19,7 +19,7 @@ if (isset($_POST['delete'])) {
             $result = $pdo->otherBinded($sql, $bindings);
 
             if ($result === 'error') {
-                $msg = "<pThere was a problem deleting this record.</p>";
+                $msg = "<p>Could not delete the contacts.</p>";
                 break;
             } else {
                 $deleted = true;

@@ -1,17 +1,16 @@
 <?php
 require_once 'controllers/addAdminProc.php';
-require_once 'includes/navigation.php';
 function init()
 {
     global $formConfig, $stickyForm, $acknowledgment;
 
 
     return <<<HTML
+<h1>Add Admin</h1>
 {$acknowledgment}
 <div class="container mt-5">
 
-<p>Fields with * are required</p>
-    <form method="post" action="">
+    <form method="post" action="index.php?page=addAdmin">
         <div class="row">
             <!-- Render first name field -->
             <div class="col-md-6">
@@ -36,7 +35,7 @@ function init()
             </div>
         </div>
 
-        <input type="submit" class="btn btn-primary" value="Add Contact">
+        <input type="submit" class="btn btn-primary" value="Add Admin">
     </form>
 </div>
 

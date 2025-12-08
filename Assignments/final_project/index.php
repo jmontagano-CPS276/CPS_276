@@ -1,6 +1,7 @@
 <?php
-require 'includes/navigation.php';
 require 'routes/router.php';
+require 'includes/navigation.php';
+
 ?>
 
 <!DOCTYPE html>
@@ -14,6 +15,8 @@ require 'routes/router.php';
 </head>
 
 <body class="container">
-    <?php echo $nav ?>
+    <?php echo $nav?>
     <?php echo $content?>
+</body>
+</html>
 
